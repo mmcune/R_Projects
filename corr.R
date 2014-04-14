@@ -9,9 +9,15 @@ corr <- function(directory, threshold = 0) {
   
   ## Return a numeric vector of correlations
   
-  results <- c(0)
+  results <- vector(mode = "numeric")
   
-  my_df <- lapply(list.files('specdata',pattern="*.csv",full.names=TRUE),read.csv)
+  df_list <- lapply(list.files('specdata',pattern="*.csv",full.names=TRUE),read.csv)
+  
+  for (i in 1:length(df_list)) {
+    if (sum(complete.cases(df_list[[i]])) > threshold) {
+      results <- c(results,cor(df_list[[i]]$sulfate,df_list[[i]]$nitrate, use = "complete.obs"))
+    }
+  }
   
   # return results
   results
